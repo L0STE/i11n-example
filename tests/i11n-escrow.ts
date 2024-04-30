@@ -161,9 +161,12 @@ describe("anchor-escrow", () => {
   it("Make CPI", async () => {
     await program.methods
     .makeCpi(seed, new BN(1e6), new BN(1e6))
-    .accounts({ ...accounts })
+    .accounts({ 
+      ...accounts,
+      escrowProgram: program.programId
+    })
     .signers([maker])
-    .rpc()
+    .rpc({skipPreflight: true})
     .then(confirm)
     .then(log);
   });

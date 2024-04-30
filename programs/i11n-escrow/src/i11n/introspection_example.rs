@@ -18,7 +18,7 @@ pub struct IntrospectionCheck<'info> {
 impl<'info> IntrospectionCheck<'info> {
     pub fn maker_check(&self) -> Result<()> {
         let index = load_current_index_checked(&self.instructions.to_account_info())?;
-        let ix = load_instruction_at_checked(index as usize + 1, &self.instructions.to_account_info())?;
+        let ix = load_instruction_at_checked(index as usize - 1, &self.instructions.to_account_info())?;
 
         let instruction = MakeI11n::try_from(&ix)?;
         msg!("MakeArgs: seed: {:?}", instruction.args.seed);

@@ -25,12 +25,14 @@ pub struct MakeCpi<'info> {
     pub token_program: AccountInfo<'info>,
     /// CHECK: the CPI will check it for us
     pub system_program: AccountInfo<'info>,
+    /// CHECK: the CPI will check it for us
+    pub escrow_program: AccountInfo<'info>,
 }
 
 impl<'info> MakeCpi<'info> {
     pub fn make_cpi(&mut self, seed: u64, deposit: u64, receive: u64) -> Result<()> {
         let ctx = CpiContext::new(
-            self.associated_token_program.to_account_info(),
+            self.escrow_program.to_account_info(),
             Make {
                 maker: self.maker.to_account_info(),
                 mint_a: self.mint_a.to_account_info(),
