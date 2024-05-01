@@ -1,91 +1,91 @@
 use anchor_lang::prelude::*;
+use anchor_lang::Discriminator;
 
-declare_id!("J8gQu1WUpZGpJNCBM5JjrSe4DxxJXRWXq6GFN5RpDYsz");
+declare_id!("2izLgwrneSriptaHAbTDLrYhum9SuyDb2t9zvM4nGo8m");
 
 // Accounts
 #[derive(Accounts)]
 pub struct Make<'info> {
     #[account(mut, signer)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub maker: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub mint_a: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub mint_b: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub maker_ata_a: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub escrow: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub vault: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub associated_token_program: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub token_program: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub system_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
 pub struct Refund<'info> {
     #[account(mut, signer)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub maker: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub mint_a: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub maker_ata_a: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub escrow: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub vault: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub associated_token_program: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub token_program: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub system_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
 pub struct Take<'info> {
     #[account(mut, signer)]
-    /// CHECK: the CPI will check it for us
-
+    /// CHECK: Skip check
     pub taker: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub maker: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub mint_a: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub mint_b: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub taker_ata_a: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub taker_ata_b: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub maker_ata_b: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub escrow: AccountInfo<'info>,
     #[account(mut)]
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub vault: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub associated_token_program: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub token_program: AccountInfo<'info>,
-    /// CHECK: the CPI will check it for us
+    /// CHECK: Skip check
     pub system_program: AccountInfo<'info>,
 }
 
@@ -103,7 +103,7 @@ pub mod cpi {
         let ix = {
             let ix = instructions::Make { seed, deposit, receive };
             let mut data = Vec::with_capacity(256);
-            data.extend_from_slice(&[138,227,232,77,223,166,96,197]);
+            data.extend_from_slice(&instructions::Make::DISCRIMINATOR);
             AnchorSerialize::serialize(&ix, &mut data)
                 .map_err(|_| anchor_lang::error::ErrorCode::InstructionDidNotSerialize)?;
             let accounts = ctx.to_account_metas(None);
@@ -124,7 +124,7 @@ pub mod cpi {
         let ix = {
             let ix = instructions::Refund {  };
             let mut data = Vec::with_capacity(256);
-            data.extend_from_slice(&[2,96,183,251,63,208,46,46]);
+            data.extend_from_slice(&instructions::Refund::DISCRIMINATOR);
             AnchorSerialize::serialize(&ix, &mut data)
                 .map_err(|_| anchor_lang::error::ErrorCode::InstructionDidNotSerialize)?;
             let accounts = ctx.to_account_metas(None);
@@ -145,7 +145,7 @@ pub mod cpi {
         let ix = {
             let ix = instructions::Take {  };
             let mut data = Vec::with_capacity(256);
-            data.extend_from_slice(&[149,226,52,104,6,142,230,39]);
+            data.extend_from_slice(&instructions::Take::DISCRIMINATOR);
             AnchorSerialize::serialize(&ix, &mut data)
                 .map_err(|_| anchor_lang::error::ErrorCode::InstructionDidNotSerialize)?;
             let accounts = ctx.to_account_metas(None);
@@ -241,15 +241,36 @@ pub mod instructions {
         pub deposit: u64,
         pub receive: u64,
     }
+    
+    impl Discriminator for Make {
+        const DISCRIMINATOR: [u8; 8] = [138,227,232,77,223,166,96,197];
+        fn discriminator() -> [u8; 8] {
+            Self::DISCRIMINATOR
+        }
+    }
 
     #[derive(AnchorSerialize, AnchorDeserialize)]
     pub struct Refund {
 
     }
+    
+    impl Discriminator for Refund {
+        const DISCRIMINATOR: [u8; 8] = [2,96,183,251,63,208,46,46];
+        fn discriminator() -> [u8; 8] {
+            Self::DISCRIMINATOR
+        }
+    }
 
     #[derive(AnchorSerialize, AnchorDeserialize)]
     pub struct Take {
 
+    }
+    
+    impl Discriminator for Take {
+        const DISCRIMINATOR: [u8; 8] = [149,226,52,104,6,142,230,39];
+        fn discriminator() -> [u8; 8] {
+            Self::DISCRIMINATOR
+        }
     }        
 }
         

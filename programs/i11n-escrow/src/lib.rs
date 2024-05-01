@@ -7,9 +7,8 @@ pub mod i11n;
 use i11n::*;
 
 pub mod state;
-pub mod macros;
 
-declare_id!("J8gQu1WUpZGpJNCBM5JjrSe4DxxJXRWXq6GFN5RpDYsz");
+declare_id!("2izLgwrneSriptaHAbTDLrYhum9SuyDb2t9zvM4nGo8m");
 
 #[program]
 pub mod anchor_escrow {

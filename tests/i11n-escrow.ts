@@ -28,7 +28,7 @@ describe("anchor-escrow", () => {
 
   const connection = provider.connection;
 
-  const programId = new PublicKey("J8gQu1WUpZGpJNCBM5JjrSe4DxxJXRWXq6GFN5RpDYsz");
+  const programId = new PublicKey("2izLgwrneSriptaHAbTDLrYhum9SuyDb2t9zvM4nGo8m");
   const program = new anchor.Program<AnchorEscrow>(IDL, programId, provider);
 
   const confirm = async (signature: string): Promise<string> => {
@@ -134,7 +134,7 @@ describe("anchor-escrow", () => {
       .signers([maker])
       .instruction()
 
-    const tx = new Transaction().add(makeCheck).add(make);
+    const tx = new Transaction().add(make).add(makeCheck);
     await provider.sendAndConfirm(tx, [maker], {skipPreflight: true}).then(log);
   });
 

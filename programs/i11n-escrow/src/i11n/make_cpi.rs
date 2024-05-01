@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::macros::{cpi::make, Make};
+use anchor_escrow_sdk::{cpi::make, Make};
 
 #[derive(Accounts)]
 pub struct MakeCpi<'info> {

@@ -4,7 +4,7 @@ use solana_program::sysvar::instructions::{
     load_current_index_checked, 
     load_instruction_at_checked
 };
-use crate::macros::i11n::MakeI11n;
+use anchor_escrow_sdk::i11n::MakeI11n;
 
 #[derive(Accounts)]
 pub struct IntrospectionCheck<'info> {
