@@ -8,7 +8,7 @@ use i11n::*;
 
 pub mod state;
 
-declare_id!("2izLgwrneSriptaHAbTDLrYhum9SuyDb2t9zvM4nGo8m");
+declare_id!("AehMjXHfTXoE2TKsmXf6DqpWYoeQfA3Xp3oEksq5w7sc");
 
 #[program]
 pub mod anchor_escrow {
@@ -33,7 +33,7 @@ pub mod anchor_escrow {
         ctx.accounts.maker_check()
     }
 
-    pub fn make_cpi(ctx: Context<MakeCpi>, seed: u64, deposit: u64, receive: u64) -> Result<()> {
-        ctx.accounts.make_cpi(seed, deposit, receive)
+    pub fn cpi_example(ctx: Context<CpiExample>, seed: u64, deposit: u64, receive: u64) -> Result<()> {
+        ctx.accounts.cpi_example(seed, deposit, receive)
     }
 }

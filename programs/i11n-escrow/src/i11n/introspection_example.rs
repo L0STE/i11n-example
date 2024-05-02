@@ -20,9 +20,9 @@ impl<'info> IntrospectionCheck<'info> {
         let index = load_current_index_checked(&self.instructions.to_account_info())?;
         let ix = load_instruction_at_checked(index as usize - 1, &self.instructions.to_account_info())?;
 
-        let instruction = MakeI11n::try_from(&ix)?;
-        msg!("MakeArgs: seed: {:?}", instruction.args.seed);
-        msg!("MakeAccounts: maker: {:?}", instruction.accounts.maker);
+        let instruction = MakeI11n::try_from(&ix).unwrap();
+        msg!("Instruction Args: {:?}", instruction.args.seed);
+        msg!("Instruction Account: {:?}", instruction.accounts.maker);
 
         Ok(())
     }

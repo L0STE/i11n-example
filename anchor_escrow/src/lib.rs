@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
-use anchor_lang::Discriminator;
 
-declare_id!("2izLgwrneSriptaHAbTDLrYhum9SuyDb2t9zvM4nGo8m");
+declare_id!("AehMjXHfTXoE2TKsmXf6DqpWYoeQfA3Xp3oEksq5w7sc");
 
 // Accounts
 #[derive(Accounts)]
@@ -89,9 +88,19 @@ pub struct Take<'info> {
     pub system_program: AccountInfo<'info>,
 }
 
+#[derive(Accounts)]
+pub struct IntrospectionCheck<'info> {
+    #[account(mut, signer)]
+    /// CHECK: Skip check
+    pub signer: AccountInfo<'info>,
+    /// CHECK: Skip check
+    pub instructions: AccountInfo<'info>,
+}
+
 // CPI
 pub mod cpi {
     #![allow(unused)]
+    use anchor_i11n::Discriminator;
     use super::*;
 
     pub fn make<'a, 'b, 'c, 'info>(
@@ -158,6 +167,27 @@ pub mod cpi {
         let mut acc_infos = ctx.to_account_infos();
         anchor_lang::solana_program::program::invoke_signed(&ix, &acc_infos, ctx.signer_seeds)
             .map_or_else(|e| Err(Into::into(e)), |_| Ok(()))
+    }
+
+    pub fn introspection_check<'a, 'b, 'c, 'info>(
+        ctx: CpiContext<'a, 'b, 'c, 'info, IntrospectionCheck<'info>>
+    ) -> anchor_lang::Result<()> {
+        let ix = {
+            let ix = instructions::IntrospectionCheck {  };
+            let mut data = Vec::with_capacity(256);
+            data.extend_from_slice(&instructions::IntrospectionCheck::DISCRIMINATOR);
+            AnchorSerialize::serialize(&ix, &mut data)
+                .map_err(|_| anchor_lang::error::ErrorCode::InstructionDidNotSerialize)?;
+            let accounts = ctx.to_account_metas(None);
+            anchor_lang::solana_program::instruction::Instruction {
+                program_id: ctx.program.key(),
+                accounts,
+                data,
+            }
+        };
+        let mut acc_infos = ctx.to_account_infos();
+        anchor_lang::solana_program::program::invoke_signed(&ix, &acc_infos, ctx.signer_seeds)
+            .map_or_else(|e| Err(Into::into(e)), |_| Ok(()))
     }  
 }
 
@@ -171,21 +201,32 @@ pub mod i11n {
     #[derive(TryFromInstruction)]
     pub struct MakeI11n<'info> {
         pub accounts: MakeAccountMetas<'info>,
-        pub args: Make
+        pub args: Make,
+        pub remaining_accounts: Vec<&'info AccountMeta>,
     }
 
     // Refund
     #[derive(TryFromInstruction)]
     pub struct RefundI11n<'info> {
         pub accounts: RefundAccountMetas<'info>,
-        pub args: Refund
+        pub args: Refund,
+        pub remaining_accounts: Vec<&'info AccountMeta>,
     }
 
     // Take
     #[derive(TryFromInstruction)]
     pub struct TakeI11n<'info> {
         pub accounts: TakeAccountMetas<'info>,
-        pub args: Take
+        pub args: Take,
+        pub remaining_accounts: Vec<&'info AccountMeta>,
+    }
+
+    // IntrospectionCheck
+    #[derive(TryFromInstruction)]
+    pub struct IntrospectionCheckI11n<'info> {
+        pub accounts: IntrospectionCheckAccountMetas<'info>,
+        pub args: IntrospectionCheck,
+        pub remaining_accounts: Vec<&'info AccountMeta>,
     }
 
     //Accounts
@@ -229,49 +270,56 @@ pub mod i11n {
         pub token_program: &'info AccountMeta,
         pub system_program: &'info AccountMeta,
     }
+
+    #[derive(TryFromAccountMetas)]
+    pub struct IntrospectionCheckAccountMetas<'info> {
+        pub signer: &'info AccountMeta,
+        pub instructions: &'info AccountMeta,
+    }
 }
 
 // Instructions
 pub mod instructions {
+    use anchor_lang::prelude::*;
+    use anchor_i11n::prelude::*;
     use super::*;
 
-    #[derive(AnchorSerialize, AnchorDeserialize)]
+    #[derive(AnchorDiscriminator, AnchorSerialize, AnchorDeserialize)]
     pub struct Make {
         pub seed: u64,
         pub deposit: u64,
         pub receive: u64,
     }
-    
-    impl Discriminator for Make {
-        const DISCRIMINATOR: [u8; 8] = [138,227,232,77,223,166,96,197];
-        fn discriminator() -> [u8; 8] {
-            Self::DISCRIMINATOR
-        }
-    }
 
-    #[derive(AnchorSerialize, AnchorDeserialize)]
+    #[derive(AnchorDiscriminator, AnchorSerialize, AnchorDeserialize)]
     pub struct Refund {
 
     }
-    
-    impl Discriminator for Refund {
-        const DISCRIMINATOR: [u8; 8] = [2,96,183,251,63,208,46,46];
-        fn discriminator() -> [u8; 8] {
-            Self::DISCRIMINATOR
-        }
-    }
 
-    #[derive(AnchorSerialize, AnchorDeserialize)]
+    #[derive(AnchorDiscriminator, AnchorSerialize, AnchorDeserialize)]
     pub struct Take {
 
     }
-    
-    impl Discriminator for Take {
-        const DISCRIMINATOR: [u8; 8] = [149,226,52,104,6,142,230,39];
-        fn discriminator() -> [u8; 8] {
-            Self::DISCRIMINATOR
-        }
+
+    #[derive(AnchorDiscriminator, AnchorSerialize, AnchorDeserialize)]
+    pub struct IntrospectionCheck {
+
     }        
+}
+
+// Accounts
+pub mod accounts {
+    #![allow(unused)]
+    use super::*;
+
+   #[account]
+    pub struct Escrow {
+        pub seed: u64,
+        pub mint_a: Pubkey,
+        pub mint_b: Pubkey,
+        pub receive: u64,
+        pub bump: u8
+    }  
 }
         
 // Defined types

@@ -28,7 +28,7 @@ describe("anchor-escrow", () => {
 
   const connection = provider.connection;
 
-  const programId = new PublicKey("2izLgwrneSriptaHAbTDLrYhum9SuyDb2t9zvM4nGo8m");
+  const programId = new PublicKey("AehMjXHfTXoE2TKsmXf6DqpWYoeQfA3Xp3oEksq5w7sc");
   const program = new anchor.Program<AnchorEscrow>(IDL, programId, provider);
 
   const confirm = async (signature: string): Promise<string> => {
@@ -118,7 +118,7 @@ describe("anchor-escrow", () => {
     await provider.sendAndConfirm(tx, [mintA, mintB, maker, taker]).then(log);
   });
 
-  it("Make", async () => {
+  it("Make + Introspection Check", async () => {
     const make = await program.methods
       .make(seed, new BN(1e6), new BN(1e6))
       .accounts({...accounts})
@@ -138,7 +138,7 @@ describe("anchor-escrow", () => {
     await provider.sendAndConfirm(tx, [maker], {skipPreflight: true}).then(log);
   });
 
-  xit("Refund", async () => {
+  it("Refund", async () => {
     await program.methods
       .refund()
       .accounts({...accounts})
@@ -148,7 +148,7 @@ describe("anchor-escrow", () => {
       .then(log);
   });
 
-  it("Take", async () => {
+  xit("Take", async () => {
     await program.methods
       .take()
       .accounts({ ...accounts })
@@ -158,9 +158,9 @@ describe("anchor-escrow", () => {
       .then(log);
   });
 
-  it("Make CPI", async () => {
+  it("CPI Example - Make", async () => {
     await program.methods
-    .makeCpi(seed, new BN(1e6), new BN(1e6))
+    .cpiExample(seed, new BN(1e6), new BN(1e6))
     .accounts({ 
       ...accounts,
       escrowProgram: program.programId

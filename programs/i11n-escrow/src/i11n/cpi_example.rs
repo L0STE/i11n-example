@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_escrow_sdk::{cpi::make, Make};
 
 #[derive(Accounts)]
-pub struct MakeCpi<'info> {
+pub struct CpiExample<'info> {
     #[account(mut, signer)]
     /// CHECK: the CPI will check it for us
     pub maker: AccountInfo<'info>,
@@ -29,8 +29,8 @@ pub struct MakeCpi<'info> {
     pub escrow_program: AccountInfo<'info>,
 }
 
-impl<'info> MakeCpi<'info> {
-    pub fn make_cpi(&mut self, seed: u64, deposit: u64, receive: u64) -> Result<()> {
+impl<'info> CpiExample<'info> {
+    pub fn cpi_example(&mut self, seed: u64, deposit: u64, receive: u64) -> Result<()> {
         let ctx = CpiContext::new(
             self.escrow_program.to_account_info(),
             Make {
